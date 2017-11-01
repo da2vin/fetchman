@@ -51,7 +51,7 @@ class TEST_Processor(BaseProcessor):
 
             md5 = hashlib.md5()
             rand_name = str(time.time()) + str(random.random())
-            md5.update(rand_name)
+            md5.update(rand_name.encode(encoding='utf-8'))
             img_name = md5.hexdigest() + '.jpg'
 
             request = Request(url=img_url, priority=1, callback=self.process_pic)
