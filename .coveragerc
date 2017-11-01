@@ -5,7 +5,10 @@ parallel = True
 
 [report]
 omit =
-    fetchman/*
+    fetchman/loginer/*
+    fetchman/downloader/proxy/*
+    fetchman/downloader/selenium_downloader.py
+    fetchman/downloader/web_driver.py
 
 exclude_lines =
     pragma: no cover
