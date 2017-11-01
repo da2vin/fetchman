@@ -154,17 +154,17 @@ class SpiderCore(object):
                                 if self._process_count > 0:
                                     return
                 pipe.execute()
+            elif isinstance(callback, Request):
+                # logger.info("push request to queue..." + str(back))
+                if self._should_follow(callback):
+                    self._queue.push(callback)
+            elif isinstance(callback,pipeItem):
+                self._process_count += 1
+                for pipename in callback.pipenames:
+                        if pipename in self._pipelines:
+                            self._pipelines[pipename].process_item(callback.result)
             else:
-                if isinstance(callback, Request):
-                    # logger.info("push request to queue..." + str(back))
-                    if self._should_follow(callback):
-                        self._queue.push(callback)
-                else:
-                    if isinstance(item,pipeItem):
-                        self._process_count += 1
-                        for pipename in item.pipenames:
-                                if pipename in self._pipelines:
-                                    self._pipelines[pipename].process_item(item.result)
+                pass
 
     def _should_follow(self, request):
         regex = self._host_regex
