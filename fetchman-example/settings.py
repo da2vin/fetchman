@@ -4,7 +4,7 @@
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
 
 # phantomjs'path
-# PHANTOMJS_PATH = 'C:/Python27/phantomjs.exe'
+# PHANTOMJS_PATH = 'C:/phantomjs.exe'
 
 # phantomjs'service
 # PHANTOMJS_SERVICE = [
@@ -23,4 +23,4 @@
 # REDIS_HOST = 'localhost'
 
 # redis port
-REDIS_PORT = 6379
+# REDIS_PORT = 6379

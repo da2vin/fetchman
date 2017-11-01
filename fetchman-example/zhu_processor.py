@@ -7,6 +7,7 @@ from fetchman.utils.decorator import check
 from fetchman.pipeline.console_pipeline import ConsolePipeline
 from fetchman.pipeline.pic_pipeline import PicPipeline
 from fetchman.pipeline.pipe_item import pipeItem
+from fetchman.downloader.selenium_downloader import SeleniumDownLoader
 
 from bs4 import BeautifulSoup as bs
 import hashlib

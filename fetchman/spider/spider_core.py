@@ -8,6 +8,8 @@ from fetchman.pipeline.pipe_item import pipeItem
 from fetchman.scheduler.queue import PriorityQueue
 from fetchman.utils import logger
 from fetchman.utils.httpobj import urlparse_cached
+from fetchman.downloader.selenium_downloader import SeleniumDownLoader
+from fetchman.settings import default_settings
 import re
 import time
 import traceback
@@ -38,10 +40,13 @@ class SpiderCore(object):
         if time_sleep:
             self._batch_size = 0
         else:
-            if batch_size:
-                self._batch_size = batch_size - 1
+            if isinstance(downloader,SeleniumDownLoader):
+                    self._batch_size=default_settings.DRIVER_POOL_SIZE
             else:
-                self._batch_size = 9
+                if batch_size:
+                    self._batch_size = batch_size - 1
+                else:
+                    self._batch_size = 9
         self._spider_name = processor.spider_name
         self._spider_id = processor.spider_id
         self._process_count = 0
