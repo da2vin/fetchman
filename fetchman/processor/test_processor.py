@@ -15,8 +15,9 @@ import time
 import random
 import sys
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+if sys.version_info < (3, 0):
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
 
 
