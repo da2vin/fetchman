@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
-from collections import Iterator
+import types
 from fetchman.downloader.http.spider_request import Request
 from fetchman.downloader.requests_downloader import RequestsDownLoader
 from fetchman.pipeline.pipe_item import pipeItem
@@ -137,35 +137,34 @@ class SpiderCore(object):
             time.sleep(self._time_sleep)
         for response in responses:
             callback = response.request.callback(response)
-            if callback is not None:
-                if isinstance(callback, Iterator):
-                    pipe = self._queue.get_pipe()
-                    for item in callback:
-                        if isinstance(item, Request):
-                            # logger.info("push request to queue..." + str(item))
-                            if self._should_follow(item):
-                                self._queue.push_pipe(item, pipe)
-                        else:
-                            if isinstance(item,pipeItem):
-                                self._process_count += 1
-                                for pipename in item.pipenames:
-                                    if pipename in self._pipelines:
-                                        self._pipelines[pipename].process_item(item.result)
-                                if self.test:
-                                    if self._process_count > 0:
-                                        return
-                    pipe.execute()
-                else:
-                    if isinstance(callback, Request):
-                        # logger.info("push request to queue..." + str(back))
-                        if self._should_follow(callback):
-                            self._queue.push(callback)
+            if isinstance(callback, types.GeneratorType):
+                pipe = self._queue.get_pipe()
+                for item in callback:
+                    if isinstance(item, Request):
+                        # logger.info("push request to queue..." + str(item))
+                        if self._should_follow(item):
+                            self._queue.push_pipe(item, pipe)
                     else:
                         if isinstance(item,pipeItem):
                             self._process_count += 1
                             for pipename in item.pipenames:
-                                    if pipename in self._pipelines:
-                                        self._pipelines[pipename].process_item(item.result)
+                                if pipename in self._pipelines:
+                                    self._pipelines[pipename].process_item(item.result)
+                            if self.test:
+                                if self._process_count > 0:
+                                    return
+                pipe.execute()
+            else:
+                if isinstance(callback, Request):
+                    # logger.info("push request to queue..." + str(back))
+                    if self._should_follow(callback):
+                        self._queue.push(callback)
+                else:
+                    if isinstance(item,pipeItem):
+                        self._process_count += 1
+                        for pipename in item.pipenames:
+                                if pipename in self._pipelines:
+                                    self._pipelines[pipename].process_item(item.result)
 
     def _should_follow(self, request):
         regex = self._host_regex
