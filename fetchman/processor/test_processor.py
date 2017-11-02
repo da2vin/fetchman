@@ -84,5 +84,5 @@ class TEST_Processor(BaseProcessor):
         yield pipeItem(['console','test'],result)
 
 if __name__ == '__main__':
-    SpiderCore(TEST_Processor()).set_pipeline('console',ConsolePipeline())\
-        .set_pipeline('save',PicPipeline()).set_pipeline('test',TestPipeline()).start()
+    SpiderCore(TEST_Processor()).set_pipeline(ConsolePipeline(),'console')\
+        .set_pipeline(PicPipeline(),'save').set_pipeline(TestPipeline(),'test').start()

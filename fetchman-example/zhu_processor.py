@@ -83,5 +83,5 @@ class Zhu_Processor(BaseProcessor):
         yield pipeItem(['console'],result)
 
 if __name__ == '__main__':
-    SpiderCore(Zhu_Processor()).set_pipeline('console',ConsolePipeline())\
-        .set_pipeline('save',PicPipeline()).start()
+    SpiderCore(Zhu_Processor()).set_pipeline(ConsolePipeline(),'console')\
+        .set_pipeline(PicPipeline(),'save').start()

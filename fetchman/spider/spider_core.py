@@ -10,6 +10,7 @@ from fetchman.utils import logger
 from fetchman.utils.httpobj import urlparse_cached
 from fetchman.downloader.selenium_downloader import SeleniumDownLoader
 from fetchman.settings import default_settings
+import uuid
 import re
 import time
 import traceback
@@ -40,8 +41,8 @@ class SpiderCore(object):
         if time_sleep:
             self._batch_size = 0
         else:
-            if isinstance(downloader,SeleniumDownLoader):
-                    self._batch_size=default_settings.DRIVER_POOL_SIZE
+            if isinstance(downloader, SeleniumDownLoader):
+                self._batch_size = default_settings.DRIVER_POOL_SIZE
             else:
                 if batch_size:
                     self._batch_size = batch_size - 1
@@ -71,7 +72,9 @@ class SpiderCore(object):
         self._downloader = downloader
         return self
 
-    def set_pipeline(self, pipeline_name ,pipeline):
+    def set_pipeline(self, pipeline=None, pipeline_name=None, ):
+        if not pipeline_name:
+            pipeline_name = str(uuid.uuid1())
         self._pipelines[pipeline_name] = pipeline
         return self
 
@@ -150,11 +153,20 @@ class SpiderCore(object):
                         if self._should_follow(item):
                             self._queue.push_pipe(item, pipe)
                     else:
-                        if isinstance(item,pipeItem):
+                        if isinstance(item, pipeItem):
+                            # 如果返回对象是pipeItem，则用对应的pipeline处理
                             self._process_count += 1
                             for pipename in item.pipenames:
                                 if pipename in self._pipelines:
                                     self._pipelines[pipename].process_item(item.result)
+                            if self.test:
+                                if self._process_count > 0:
+                                    return
+                        else:
+                            # 如果返回对象不是pipeItem，则默认用每个pipeline处理
+                            self._process_count += 1
+                            for pipeline in self._pipelines.itervalues():
+                                pipeline.process_item(item)
                             if self.test:
                                 if self._process_count > 0:
                                     return
@@ -163,13 +175,20 @@ class SpiderCore(object):
                 # logger.info("push request to queue..." + str(back))
                 if self._should_follow(callback):
                     self._queue.push(callback)
-            elif isinstance(callback,pipeItem):
+            elif isinstance(callback, pipeItem):
+                # 如果返回对象是pipeItem，则用对应的pipeline处理
                 self._process_count += 1
                 for pipename in callback.pipenames:
-                        if pipename in self._pipelines:
-                            self._pipelines[pipename].process_item(callback.result)
+                    if pipename in self._pipelines:
+                        self._pipelines[pipename].process_item(callback.result)
             else:
-                pass
+                # 如果返回对象不是pipeItem，则默认用每个pipeline处理
+                self._process_count += 1
+                for pipeline in self._pipelines.itervalues:
+                    pipeline.process_item(item)
+                if self.test:
+                    if self._process_count > 0:
+                        return
 
     def _should_follow(self, request):
         regex = self._host_regex
@@ -184,6 +203,3 @@ class SpiderCore(object):
             return re.compile('')  # allow all by default
         regex = r'^(.*\.)?(%s)$' % '|'.join(re.escape(d) for d in allowed_domains if d is not None)
         return re.compile(regex)
-
-
-
