@@ -16,10 +16,10 @@ def check(func):
             response.request.meta['retry'] += 1
             # 最多重试3次
             if response.request.meta['retry'] < 4:
-                retry_str = '\nrequest has been push to queue again! try time:' + response.request.meta['retry']
+                retry_str = '\nrequest has been push to queue again! try time:' + str(response.request.meta['retry'])
                 yield response.request
             else:
-                retry_str = '\nrequest has been try max times! will not push again! try time:' + response.request.meta['retry']
+                retry_str = '\nrequest has been try max times! will not push again! try time:' + str(response.request.meta['retry'])
 
             if response.m_response is None:
                 logger.error('response.m_response is None'
