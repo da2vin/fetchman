@@ -21,6 +21,7 @@ class Request(object):
             self.meta = {}
         else:
             self.meta = meta
+        self.meta['retry'] = 0
         self.cookies = cookies
         self.callback = callback
         self.priority = priority

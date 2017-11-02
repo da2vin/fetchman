@@ -11,6 +11,7 @@ fetchman/downloader/requests_downloader.py
 fetchman/downloader/selenium_downloader.py
 fetchman/downloader/web_driver_pool.py
 fetchman/downloader/http/__init__.py
+fetchman/downloader/http/selenium_response.py
 fetchman/downloader/http/spider_request.py
 fetchman/downloader/http/spider_response.py
 fetchman/downloader/proxy/__init__.py

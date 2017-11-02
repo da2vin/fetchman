@@ -13,38 +13,46 @@ def check(func):
     @functools.wraps(func)
     def wrapper(self, response):
         if not response.m_response:
+            response.request.meta['retry'] += 1
+            # 最多重试3次
+            if response.request.meta['retry'] < 4:
+                retry_str = '\nrequest has been push to queue again! try time:' + str(response.request.meta['retry'])
+                yield response.request
+            else:
+                retry_str = '\nrequest has been try max times! will not push again! try time:' + str(response.request.meta['retry'])
+
             if response.m_response is None:
                 logger.error('response.m_response is None'
                              + '\nURL : ' + response.request.url
-                             + '\nrequest has been push to queue again!')
+                             + retry_str)
             else:
                 # 记录返回数据
-                log_name = 'log/' + str(uuid.uuid1())+'_log.txt'
-                with open(log_name,'wb') as f:
+                log_name = 'log/' + str(uuid.uuid1()) + '_log.txt'
+                with open(log_name, 'wb') as f:
                     f.write(response.m_response.content)
 
                 logger.error('response.m_response is failed 【' + str(response.m_response.status_code) + '】'
-                             +'\nURL : ' + response.request.url
-                             +'\nresponse: ' + log_name
-                             +'\nrequest has been push to queue again!')
-            yield response.request
+                             + '\nURL : ' + response.request.url
+                             + '\nresponse: ' + log_name
+                             + retry_str)
         else:
             try:
                 process = func(self, response)
-                if isinstance(process,types.GeneratorType):
+                if isinstance(process, types.GeneratorType):
                     for callback in process:
                         yield callback
             except Exception:
                 # 记录返回数据
-                log_name = 'log/' + str(uuid.uuid1())+'_log.txt'
-                with open(log_name,'wb') as f:
+                log_name = 'log/' + str(uuid.uuid1()) + '_log.txt'
+                with open(log_name, 'wb') as f:
                     f.write(response.m_response.content)
 
                 logger.error('process error: ' + response.request.url
-                             + '\nresponse' + log_name
+                             + '\nresponse: ' + log_name
                              + '\n' + traceback.format_exc())
 
     return wrapper
+
 
 def timeit(func):
     @functools.wraps(func)
