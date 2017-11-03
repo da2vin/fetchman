@@ -19,7 +19,7 @@ def check(func):
                 retry_str = '\nrequest has been push to queue again! try time:' + str(response.request.meta['retry'])
                 yield response.request
             else:
-                retry_str = '\nrequest has been try max times! will not push again! try time:' + str(response.request.meta['retry'])
+                retry_str = '\nrequest has been try max times! will not push again!'
 
             if response.m_response is None:
                 logger.error('response.m_response is None'
