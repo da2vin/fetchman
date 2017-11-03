@@ -27,7 +27,7 @@ class Request(object):
                 for key in meta.iterkeys():
                     self.meta[key] = meta[key]
             else:
-                for item in meta.items:
+                for item in meta.items():
                     self.meta[item[0]] = item[1]
         self.cookies = cookies
         self.callback = callback
