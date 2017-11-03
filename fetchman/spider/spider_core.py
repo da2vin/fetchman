@@ -54,6 +54,8 @@ class SpiderCore(object):
 
         if not downloader:
             self._downloader = RequestsDownLoader(use_proxy=use_proxy)
+        else:
+            self._downloader = downloader
 
         if not scheduler:
             self._queue = PriorityQueue(self._processor)
@@ -70,6 +72,8 @@ class SpiderCore(object):
 
     def set_downloader(self, downloader):
         self._downloader = downloader
+        if isinstance(downloader, SeleniumDownLoader):
+                self._batch_size = default_settings.DRIVER_POOL_SIZE
         return self
 
     def set_pipeline(self, pipeline=None, pipeline_name=None, ):
