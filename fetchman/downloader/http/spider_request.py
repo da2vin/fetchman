@@ -21,7 +21,10 @@ class Request(object):
             self.meta = dict()
             self.meta['retry'] = 0
         else:
-            self.meta = meta
+            self.meta = dict()
+            self.meta['retry'] = 0
+            for key in meta.iterkeys():
+                self.meta[key] = meta[key]
         self.cookies = cookies
         self.callback = callback
         self.priority = priority
