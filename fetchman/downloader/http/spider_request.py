@@ -23,8 +23,12 @@ class Request(object):
         else:
             self.meta = dict()
             self.meta['retry'] = 0
-            for key in meta.iterkeys():
-                self.meta[key] = meta[key]
+            if sys.version_info < (3, 0):
+                for key in meta.iterkeys():
+                    self.meta[key] = meta[key]
+            else:
+                for item in meta.items:
+                    self.meta[item[0]] = item[1]
         self.cookies = cookies
         self.callback = callback
         self.priority = priority
