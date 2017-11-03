@@ -42,7 +42,7 @@ class SpiderCore(object):
             self._batch_size = 0
         else:
             if isinstance(downloader, SeleniumDownLoader):
-                self._batch_size = default_settings.DRIVER_POOL_SIZE
+                self._batch_size = default_settings.DRIVER_POOL_SIZE - 1
             else:
                 if batch_size:
                     self._batch_size = batch_size - 1
@@ -73,7 +73,7 @@ class SpiderCore(object):
     def set_downloader(self, downloader):
         self._downloader = downloader
         if isinstance(downloader, SeleniumDownLoader):
-                self._batch_size = default_settings.DRIVER_POOL_SIZE
+                self._batch_size = default_settings.DRIVER_POOL_SIZE - 1
         return self
 
     def set_pipeline(self, pipeline=None, pipeline_name=None, ):
