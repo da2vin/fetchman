@@ -95,12 +95,11 @@ class SpiderCore(object):
             logger.info("START %s SUCCESS" % self._spider_id)
             self._spider_status = 'start'
             self._queue = PriorityQueue(self._processor)
-            if len(self._processor.start_requests) > 0:
-                for start_request in self._processor.start_requests:
-                    if self._should_follow(start_request):
-                        start_request.duplicate_remove = False
-                        self._queue.push(start_request)
-                        logger.info("start request:" + str(start_request))
+            for start_request in self._processor.start_requests:
+                if self._should_follow(start_request):
+                    start_request.duplicate_remove = False
+                    self._queue.push(start_request)
+                    logger.info("start request:" + str(start_request))
             for batch in self._batch_requests():
                 if len(batch) > 0:
                     self._crawl(batch)
