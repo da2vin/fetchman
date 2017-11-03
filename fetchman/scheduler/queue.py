@@ -56,23 +56,29 @@ class PriorityQueue(Base):
 
     def push_pipe(self, request, pipe):
         score = -request.priority
-        data = cPickle.dumps(request_to_dict(request, self.processor), protocol=-1)
+        d = request_to_dict(request, self.processor)
+        data = cPickle.dumps(d, protocol=-1)
+        del d['meta']
+        filter_data = cPickle.dumps(d, protocol=-1)
         if not request.duplicate_remove:
             pipe.execute_command('ZADD', self.task_id, score, data)
         else:
-            if not self._filter.is_contains(data):
+            if not self._filter.is_contains(filter_data):
                 pipe.execute_command('ZADD', self.task_id, score, data)
-                self._filter.insert(data)
+                self._filter.insert(filter_data)
 
     def push(self, request):
         score = -request.priority
-        data = cPickle.dumps(request_to_dict(request, self.processor), protocol=-1)
+        d = request_to_dict(request, self.processor)
+        data = cPickle.dumps(d, protocol=-1)
+        del d['meta']
+        filter_data = cPickle.dumps(d, protocol=-1)
         if not request.duplicate_remove:
             self._server.execute_command('ZADD', self.task_id, score, data)
         else:
-            if not self._filter.is_contains(data):
+            if not self._filter.is_contains(filter_data):
                 self._server.execute_command('ZADD', self.task_id, score, data)
-                self._filter.insert(data)
+                self._filter.insert(filter_data)
 
     def pop(self):
         pipe = self._server.pipeline()
