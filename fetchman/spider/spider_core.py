@@ -6,7 +6,7 @@ from fetchman.downloader.http.spider_request import Request
 from fetchman.downloader.requests_downloader import RequestsDownLoader
 from fetchman.pipeline.pipe_item import pipeItem
 from fetchman.scheduler.queue import PriorityQueue
-from fetchman.utils import logger
+from fetchman.utils import FetchManLogger
 from fetchman.utils.httpobj import urlparse_cached
 from fetchman.downloader.selenium_downloader import SeleniumDownLoader
 from fetchman.settings import default_settings
@@ -34,6 +34,7 @@ class SpiderCore(object):
         # 用于测试,爬取成功第一个以后结束
         self.test = test
         self._processor = processor
+        FetchManLogger.init_logger(processor.spider_id)
         self._host_regex = self._get_host_regex()
         self._spider_status = 'stopped'
         self._pipelines = {}
@@ -86,7 +87,7 @@ class SpiderCore(object):
 
     def stop(self):
         if self._spider_status == 'stopped':
-            logger.info("STOP %s SUCCESS" % self._spider_id)
+            FetchManLogger.logger.info("STOP %s SUCCESS" % self._spider_id)
             return
         elif self._spider_status == 'stopping':
             while self._spider_status == 'stopping':
@@ -98,7 +99,7 @@ class SpiderCore(object):
 
     def start(self):
         try:
-            logger.info("START %s SUCCESS" % self._spider_id)
+            FetchManLogger.logger.info("START %s SUCCESS" % self._spider_id)
             self._spider_status = 'start'
             self._queue = PriorityQueue(self._processor)
             if not self._processor.start_requests:
@@ -107,7 +108,7 @@ class SpiderCore(object):
                 if self._should_follow(start_request):
                     start_request.duplicate_remove = False
                     self._queue.push(start_request)
-                    logger.info("start request:" + str(start_request))
+                    FetchManLogger.logger.info("start request:" + str(start_request))
             for batch in self._batch_requests():
                 if len(batch) > 0:
                     self._crawl(batch)
@@ -117,9 +118,9 @@ class SpiderCore(object):
                 if self._spider_status == 'stopping':
                     break
             self._spider_status = 'stopped'
-            logger.info("STOP %s SUCCESS" % self._spider_id)
+            FetchManLogger.logger.info("STOP %s SUCCESS" % self._spider_id)
         except Exception:
-            logger.info("%s -- Exception -- Stopped -- %s" % (self._spider_id, traceback.format_exc()))
+            FetchManLogger.logger.info("%s -- Exception -- Stopped -- %s" % (self._spider_id, traceback.format_exc()))
             self._spider_status = 'stopped'
 
     def restart(self):

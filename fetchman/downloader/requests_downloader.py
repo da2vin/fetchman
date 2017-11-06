@@ -8,7 +8,7 @@ from fetchman.downloader.base_downloder import BaseDownLoader
 from fetchman.downloader.http.spider_response import Response
 from fetchman.downloader.proxy.proxy_pool import ProxyPool
 
-from fetchman.utils import logger
+from fetchman.utils import FetchManLogger
 
 if sys.version_info < (3, 0):
     reload(sys)
@@ -116,11 +116,11 @@ class RequestsDownLoader(BaseDownLoader):
                 request=batch[index],
             )
             true_responses.append(true_response)
-            logger.info(true_response)
+            FetchManLogger.logger.info(true_response)
             index += 1
 
         return true_responses
 
 
 def exception_handler(request, exception):
-    logger.error("%s %s" % (request.url, exception))
+    FetchManLogger.logger.error("%s %s" % (request.url, exception))

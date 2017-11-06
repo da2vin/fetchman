@@ -6,7 +6,7 @@ from fetchman.settings import default_settings
 from fetchman.downloader.base_downloder import BaseDownLoader
 from fetchman.downloader.http.selenium_response import SeleniumResponse
 from fetchman.downloader.web_driver_pool import get_web_driver_pool
-from fetchman.utils import logger
+from fetchman.utils import FetchManLogger
 from multiprocessing.pool import ThreadPool as Pool
 
 if sys.version_info < (3, 0):
@@ -17,12 +17,12 @@ if sys.version_info < (3, 0):
 class SeleniumDownLoader(BaseDownLoader):
     def __init__(self, driver_pool_size=None):
         self.driver_pool_size = driver_pool_size
-        logger.info("init web driver pool...")
+        FetchManLogger.logger.info("init web driver pool...")
         if driver_pool_size:
             self.web_driver_pool = get_web_driver_pool(driver_pool_size)
         else:
             self.web_driver_pool = get_web_driver_pool(default_settings.DRIVER_POOL_SIZE)
-        logger.info("init web driver pool success")
+        FetchManLogger.logger.info("init web driver pool success")
 
     def download_one(self, request):
         web = self.web_driver_pool.get()  # type:WebDriver
@@ -50,7 +50,7 @@ class SeleniumDownLoader(BaseDownLoader):
         for result in results:
             true_response = result.get()
             true_responses.append(true_response)
-            logger.info(true_response)
+            FetchManLogger.logger.info(true_response)
 
         return true_responses
 

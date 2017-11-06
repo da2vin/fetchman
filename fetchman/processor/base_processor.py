@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup as bs
 from fetchman.downloader.http.spider_request import Request
 from fetchman.utils.decorator import check
 from fetchman.scheduler.queue import PriorityQueue
-from fetchman.utils import logger
+from fetchman.utils import FetchManLogger
 
 if sys.version_info < (3, 0):
     reload(sys)
@@ -79,7 +79,7 @@ class BaseProcessor(object):
         for start_request in cls.start_requests:
             start_request.duplicate_remove = False
             queue.push(start_request)
-            logger.info("push start request to queue :" + str(start_request))
+            FetchManLogger.logger.info("push start request to queue :" + str(start_request))
 
     @classmethod
     def push_request(cls, requests):
@@ -89,13 +89,13 @@ class BaseProcessor(object):
                 if isinstance(request,Request):
                     request.duplicate_remove = False
                     queue.push(request)
-                    logger.info("push request to queue :" + str(request))
+                    FetchManLogger.logger.info("push request to queue :" + str(request))
                 else:
-                    logger.info("param is not Request!")
+                    FetchManLogger.logger.info("param is not Request!")
         elif isinstance(requests, Request):
             queue = PriorityQueue(cls)
             requests.duplicate_remove = False
             queue.push(requests)
-            logger.info("push request to queue :" + str(requests))
+            FetchManLogger.logger.info("push request to queue :" + str(requests))
         else:
-            logger.info("param is not Request!")
+            FetchManLogger.logger.info("param is not Request!")

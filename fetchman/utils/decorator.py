@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import functools
-from fetchman.utils import logger
+from fetchman.utils import FetchManLogger
 import traceback
 import types
 import time
@@ -22,16 +22,16 @@ def check(func):
                 retry_str = '\nrequest has been try max times! will not push again!'
 
             if response.m_response is None:
-                logger.error('response.m_response is None'
+                FetchManLogger.logger.error('response.m_response is None'
                              + '\nURL : ' + response.request.url
                              + retry_str)
             else:
                 # 记录返回数据
-                log_name = 'log/' + str(uuid.uuid1()) + '_log.txt'
+                log_name = 'log/error_content/' + str(uuid.uuid1()) + '_log.txt'
                 with open(log_name, 'wb') as f:
                     f.write(response.m_response.content)
 
-                logger.error('response.m_response is failed 【' + str(response.m_response.status_code) + '】'
+                FetchManLogger.logger.error('response.m_response is failed 【' + str(response.m_response.status_code) + '】'
                              + '\nURL : ' + response.request.url
                              + '\nresponse: ' + log_name
                              + retry_str)
@@ -43,11 +43,11 @@ def check(func):
                         yield callback
             except Exception:
                 # 记录返回数据
-                log_name = 'log/' + str(uuid.uuid1()) + '_log.txt'
+                log_name = 'log/error_content/' + str(uuid.uuid1()) + '_log.txt'
                 with open(log_name, 'wb') as f:
                     f.write(response.m_response.content)
 
-                logger.error('process error: ' + response.request.url
+                FetchManLogger.logger.error('process error: ' + response.request.url
                              + '\nresponse: ' + log_name
                              + '\n' + traceback.format_exc())
 
@@ -59,7 +59,7 @@ def timeit(func):
     def wrapper(*args, **kwargs):
         start = time.clock()
         ret = func(*args, **kwargs)
-        logger.info(func.__name__ + ' run time: ' + '{:.9f}'.format(time.clock() - start))
+        FetchManLogger.logger.info(func.__name__ + ' run time: ' + '{:.9f}'.format(time.clock() - start))
         return ret
 
     return wrapper
@@ -72,7 +72,7 @@ def timeit_generator(func):
         start = time.clock()
         for ret in rets:
             yield ret
-        logger.info(func.__name__ + ' run time: ' + '{:.9f}'.format(time.clock() - start))
+        FetchManLogger.logger.info(func.__name__ + ' run time: ' + '{:.9f}'.format(time.clock() - start))
 
     return wrapper
 
@@ -84,7 +84,7 @@ def tryCatch(func):
             ret = func(*args, **kwargs)
             return ret
         except Exception:
-            logger.info('【%s】error:%s' % (func.__name__, traceback.format_exc()))
+            FetchManLogger.logger.info('【%s】error:%s' % (func.__name__, traceback.format_exc()))
 
     return wrapper
 
@@ -97,6 +97,6 @@ def tryCatch_generator(func):
             for ret in rets:
                 yield ret
         except Exception:
-            logger.info('【%s】error:%s' % (func.__name__, traceback.format_exc()))
+            FetchManLogger.logger.info('【%s】error:%s' % (func.__name__, traceback.format_exc()))
 
     return wrapper
