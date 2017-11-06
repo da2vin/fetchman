@@ -23,7 +23,6 @@ if sys.version_info < (3, 0):
 
 class Zhu_Processor(BaseProcessor):
     spider_id = 'zhu_spider'
-    spider_name = 'zhu_spider'
     allowed_domains = ['zhuwang.cc']
     start_requests = [Request(url='http://www.zhuwang.cc/list-58-1.html', priority=0)]
 

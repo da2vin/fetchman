@@ -49,7 +49,6 @@ class LinkExtractor(object):
 
 class BaseProcessor(object):
     spider_id = None
-    spider_name = None
     start_requests = []
     rules = ()
     allowed_domains = []
@@ -69,6 +68,10 @@ class BaseProcessor(object):
                     yield request
                     if rule.only_first:
                         break
+
+    @classmethod
+    def init_start_requests(cls):
+        pass
 
     @classmethod
     def push_start_request(cls):

@@ -48,12 +48,14 @@ class SpiderCore(object):
                     self._batch_size = batch_size - 1
                 else:
                     self._batch_size = 9
-        self._spider_name = processor.spider_name
         self._spider_id = processor.spider_id
         self._process_count = 0
 
         if not downloader:
             self._downloader = RequestsDownLoader(use_proxy=use_proxy)
+        elif isinstance(downloader,SeleniumDownLoader):
+            self._downloader = downloader
+            self._batch_size = default_settings.DRIVER_POOL_SIZE - 1
         else:
             self._downloader = downloader
 
@@ -99,6 +101,8 @@ class SpiderCore(object):
             logger.info("START %s SUCCESS" % self._spider_id)
             self._spider_status = 'start'
             self._queue = PriorityQueue(self._processor)
+            if not self._processor.start_requests:
+                self._processor.init_start_requests()
             for start_request in self._processor.start_requests:
                 if self._should_follow(start_request):
                     start_request.duplicate_remove = False
