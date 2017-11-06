@@ -29,7 +29,7 @@ class FetchManLogger(object):
         fh_error.setLevel(logging.ERROR)
         # 建立一个filehandler来把日志记录在文件里，级别为error以上
         fh_info = logging.FileHandler("log/" + name + "_INFO_" + date_time + ".log")
-        fh_info.setLevel(logging.ERROR)
+        fh_info.setLevel(logging.INFO)
         # 建立一个streamhandler来把日志打在CMD窗口上，级别为info以上
         ch = logging.StreamHandler()
         ch.setLevel(logging.INFO)
