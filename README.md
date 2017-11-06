@@ -45,7 +45,6 @@ from fetchman.spider.spider_core import SpiderCore
 
 class Mzi_Processor(BaseProcessor):
     spider_id = 'mzi_spider'
-    spider_name = 'mzi_spider'
     allowed_domains = ['mzitu.com']
     start_requests = [Request(url='http://www.mzitu.com/', priority=0)]
 
@@ -77,7 +76,6 @@ import uuid
 
 class MezituProcessor(BaseProcessor):
     spider_id = 'mzitu'
-    spider_name = 'mzitu'
     allowed_domains = ['mzitu.com', 'meizitu.net']
     start_requests = [Request(url='http://www.mzitu.com/xinggan/')]
 
