@@ -3,6 +3,7 @@
 import sys
 import re
 from posixpath import normpath
+from bs4 import BeautifulSoup as bs
 
 if sys.version_info < (3, 0):
     reload(sys)
@@ -22,6 +23,9 @@ class SeleniumResponse(object):
             return "<SeleniumResponse [%s] [%.2f KB]>" % (self.request.url, (float(len(self.m_response.content)) / 1000))
         else:
             return "<SeleniumResponse failed: %s>" % self.request.url
+
+    def get_soup(self):
+        return bs(self.m_response.content, 'lxml')
 
     def nice_join(self, url):
         url1 = urljoin(self.request.url, url)
