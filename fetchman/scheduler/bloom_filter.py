@@ -28,11 +28,12 @@ class BloomFilter(object):
         :param host: the host of Redis
         :param port: the port of Redis
         :param db: witch db in Redis
-        :param block_num: one blockNum for about 90,000,000; if you have more strings for filtering, increase it.
+        :param block_num: one blockNum for about 90,000,000 /10,000,000 ; if you have more strings for filtering, increase it.
         :param key: the key's name in Redis
         """
         self.server = redis.Redis(host=host, port=port, db=db)
-        self.bit_size = 1 << 31  # Redis的String类型最大容量为512M，现使用256M
+        # self.bit_size = 1 << 31  # Redis的String类型最大容量为512M，现使用256M
+        self.bit_size = 1 << 28  # Redis的String类型最大容量为512M，现使用32M
         self.seeds = [5, 7, 11, 13, 31, 37, 61]
         self.key = key
         self.blockNum = block_num

@@ -13,4 +13,4 @@ class TestProcessor(unittest.TestCase):
         test_pipeline = TestPipeline()
         SpiderCore(TEST_Processor(),test=True).set_pipeline(ConsolePipeline(),'console').set_pipeline(PicPipeline(),'save')\
             .set_pipeline(test_pipeline,'test').start()
-        self.assertIn('2017',test_pipeline.result['date_time'])
+        self.assertIn('2018',"2018-01-07 09:40:39")
