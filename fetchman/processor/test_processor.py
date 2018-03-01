@@ -32,30 +32,29 @@ class Tuliu_Processor(BaseProcessor):
 
     @check
     def process(self, response):
-        if '404错误' not in response.m_response.content:
-            soup = bs(response.m_response.content, 'lxml')
+        soup = bs(response.m_response.content, 'lxml')
 
-            tuliu_div_list = soup.select('div.news_list_list ul li.list_box')
-            for tuliu_div in tuliu_div_list:
-                if tuliu_div.select('a img'):
-                    detail_url = tuliu_div.select('a')[0]['href']
-                    img_url = tuliu_div.select('a img')[0]['src']
-                    name = tuliu_div.select('h1.category_title nobr.l')[0].text.strip()
-                    createTime = tuliu_div.select('h1.category_title nobr.r')[0].text.replace('发布时间 ', '').strip()
-                    shortDes = tuliu_div.select('div')[0].text.replace('[查看全文]', '')
+        tuliu_div_list = soup.select('div.news_list_list ul li.list_box')
+        for tuliu_div in tuliu_div_list:
+            if tuliu_div.select('a img'):
+                detail_url = tuliu_div.select('a')[0]['href']
+                img_url = tuliu_div.select('a img')[0]['src']
+                name = tuliu_div.select('h1.category_title nobr.l')[0].text.strip()
+                createTime = tuliu_div.select('h1.category_title nobr.r')[0].text.replace('发布时间 ', '').strip()
+                shortDes = tuliu_div.select('div')[0].text.replace('[查看全文]', '')
 
-                    md5 = hashlib.md5()
-                    rand_name = str(time.time()) + str(random.random())
-                    md5.update(rand_name)
-                    img_name = md5.hexdigest() + '.jpg'
+                md5 = hashlib.md5()
+                rand_name = str(time.time()) + str(random.random())
+                md5.update(rand_name)
+                img_name = md5.hexdigest() + '.jpg'
 
-                    request = Request(url=detail_url, priority=1, callback=self.process_detail)
-                    request.meta['name'] = name
-                    request.meta['createTime'] = createTime
-                    request.meta['shortDes'] = shortDes
-                    request.meta['img_name'] = img_name
-                    request.meta['newsCateId'] = response.request.meta['newsCateId']
-                    yield request
+                request = Request(url=detail_url, priority=1, callback=self.process_detail)
+                request.meta['name'] = name
+                request.meta['createTime'] = createTime
+                request.meta['shortDes'] = shortDes
+                request.meta['img_name'] = img_name
+                request.meta['newsCateId'] = response.request.meta['newsCateId']
+                yield request
 
     # 获取新闻详情并丢入DataBasePipeline
     @check
