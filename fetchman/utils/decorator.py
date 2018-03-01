@@ -41,6 +41,8 @@ def check(func):
                 if isinstance(process, types.GeneratorType):
                     for callback in process:
                         yield callback
+                else:
+                    yield process
             except Exception:
                 # 记录返回数据
                 log_name = 'log/error_content/' + str(uuid.uuid1()) + '_log.txt'
