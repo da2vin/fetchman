@@ -8,7 +8,6 @@ services:
 - redis-server
 install:
 - pip install lxml
-- pip install --allow-all-external -e .[test]
 - pip install coveralls
 script:
 - coverage run setup.py test
