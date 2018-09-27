@@ -35,11 +35,11 @@ class RequestsDownLoader(BaseDownLoader):
         cookie_dict = dict()
         self._cookies = cookie_dict
 
-    def init_loginer(self, account, password):
-        self._cookies = self.loginer.login(account, password)
-
-    def set_cookies(self, cookies):
-        self._cookies = cookies
+    # def init_loginer(self, account, password):
+    #     self._cookies = self.loginer.login(account, password)
+    #
+    # def set_cookies(self, cookies):
+    #     self._cookies = cookies
 
     def download(self, batch):
         batch_requests = []
@@ -60,7 +60,8 @@ class RequestsDownLoader(BaseDownLoader):
                         session=session,
                         url=request.url,
                         headers=request.headers,
-                        cookies=self._cookies,
+                        # cookies=self._cookies,
+                        cookies=request.cookies,
                         verify=False,
                         allow_redirects=request.allow_redirects,
                         timeout=request.timeout,
@@ -71,7 +72,8 @@ class RequestsDownLoader(BaseDownLoader):
                         session=session,
                         url=request.url,
                         headers=request.headers,
-                        cookies=self._cookies,
+                        # cookies=self._cookies,
+                        cookies=request.cookies,
                         verify=False,
                         allow_redirects=request.allow_redirects,
                         timeout=request.timeout
@@ -85,7 +87,8 @@ class RequestsDownLoader(BaseDownLoader):
                         data=request.data,
                         json=request.json,
                         headers=request.headers,
-                        cookies=self._cookies,
+                        # cookies=self._cookies,
+                        cookies=request.cookies,
                         verify=False,
                         allow_redirects=request.allow_redirects,
                         timeout=request.timeout,
@@ -98,7 +101,8 @@ class RequestsDownLoader(BaseDownLoader):
                         data=request.data,
                         json=request.json,
                         headers=request.headers,
-                        cookies=self._cookies,
+                        # cookies=self._cookies,
+                        cookies=request.cookies,
                         verify=False,
                         allow_redirects=request.allow_redirects,
                         timeout=request.timeout
